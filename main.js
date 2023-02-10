@@ -11,7 +11,7 @@ const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load(textureURL);
 const displacementMap = textureLoader.load(displacementURL);
 
-var geometry = new THREE.SphereGeometry( 2,60,60 );
+var geometry = new THREE.SphereGeometry( 4,60,60 );
 const material = new THREE.MeshPhongMaterial(
   {
     color: 0xffffff,
