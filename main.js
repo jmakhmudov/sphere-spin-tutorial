@@ -2,13 +2,28 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap'
 
+const textureURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/lroc_color_poles_1k.jpg";
+const displacementURL = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/17271/ldem_3_8bit.jpg";
+
 const scene = new THREE.Scene()
 
-const geometry = new THREE.SphereGeometry(3, 64, 64)
-const material = new THREE.MeshStandardMaterial({
-  color: '#00ff83',
-  roughness: 0.5
-})
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(textureURL);
+const displacementMap = textureLoader.load(displacementURL);
+
+var geometry = new THREE.SphereGeometry( 2,60,60 );
+const material = new THREE.MeshPhongMaterial(
+  {
+    color: 0xffffff,
+    map: texture,
+    displacementMap: displacementMap,
+    displacementScale: 0.06,
+    bumpMap: displacementMap,
+    bumpScale: 0.04,
+    reflectivity: 0,
+    shininess: 0,
+  }
+)
 const mesh = new THREE.Mesh(geometry, material)
 scene.add(mesh)
 
@@ -67,24 +82,4 @@ tl.fromTo(mesh.scale, { z: 0, x: 0, y: 0 }, { z: 1, x: 1, y: 1 })
 tl.fromTo('nav', { y: '-100%' }, { y: '0%' })
 tl.fromTo('.title', { opacity: 0 }, { opacity: 1 })
 
-let mouseDown = false
-let rgb = []
-window.addEventListener("mousedown", () => (mouseDown = true))
-window.addEventListener("mouseup", () => (mouseDown = false))
 
-window.addEventListener("mousemove", (e) => {
-  if (mouseDown) {
-    rgb = [
-      Math.round((e.pageX / sizes.width) * 255),
-      Math.round((e.pageY / sizes.height) * 255),
-      150
-    ]
-
-    let newColor = new THREE.Color(`rgb(${rgb.join(",")})`)
-    gsap.to(mesh.material.color, { 
-      r: newColor.r, 
-      g: newColor.g, 
-      b: newColor.b 
-    })
-  }
-})
